@@ -1,0 +1,26 @@
+const express = require('express');
+const router = express.Router();
+const app = express();
+const axios = require('axios');
+
+
+
+app.post('/factcheck', async (req, res) => {
+  const { claim } = req.body;
+  
+  try {
+    const response = await axios.get('https://factchecktools.googleapis.com/v1alpha1/claims:search', {
+      params: {
+        query: claim,
+        key: process.env.GOOGLE_FACT_CHECK_API_KEY// Store your key in .env
+  }
+  
+});
+res.json(response.data);
+} catch (error) {
+  console.error(error.message);
+  res.status(500).json({ error: 'Error checking the claim.' });
+}
+});
+
+module.exports = router;
